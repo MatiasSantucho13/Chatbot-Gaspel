@@ -1,0 +1,72 @@
+{
+    "constructora_demo": [
+        {
+            "role": "user",
+            "text": "hola"
+        },
+        {
+            "role": "model",
+            "text": "\u00a1Hola! Soy tu asistente virtual de Constructora Lautaro, impulsado por SanTec. \u00bfEn qu\u00e9 puedo ayudarte hoy con tu proyecto de construcci\u00f3n?"
+        },
+        {
+            "role": "user",
+            "text": "quiero saber el precio del cemento"
+        },
+        {
+            "role": "model",
+            "text": "El Cemento Avellaneda (50kg) tiene un precio referencial de $9.500."
+        },
+        {
+            "role": "user",
+            "text": "podes explicarme que mas necesito para construir una pared?"
+        },
+        {
+            "role": "model",
+            "text": "Para construir una pared, adem\u00e1s de cemento, necesitar\u00e1s ladrillos, arena y agua para el mortero, y herramientas b\u00e1sicas de alba\u00f1iler\u00eda."
+        },
+        {
+            "role": "user",
+            "text": "cemento"
+        },
+        {
+            "role": "model",
+            "text": "S\u00ed, el cemento es un componente clave para el mortero que une los ladrillos. Lo mezclar\u00e1s con arena y agua."
+        },
+        {
+            "role": "user",
+            "text": "hola"
+        },
+        {
+            "role": "model",
+            "text": "\u00a1Hola de nuevo! Soy tu asistente virtual de Constructora Lautaro. \u00bfEn qu\u00e9 m\u00e1s puedo ayudarte hoy con tu proyecto?"
+        }
+    ],
+    "visita_q195kc1rc_1767974591810": [
+        {
+            "role": "user",
+            "text": "hola"
+        },
+        {
+            "role": "model",
+            "text": "\u00a1Hola! Soy tu asistente virtual de Constructora Lautaro. \u00bfEn qu\u00e9 puedo ayudarte hoy con tu proyecto de construcci\u00f3n?"
+        },
+        {
+            "role": "user",
+            "text": "me llamo juan y quiero arena"
+        },
+        {
+            "role": "model",
+            "text": "\u00a1Hola Juan! Un bols\u00f3n de arena tiene un precio referencial de $35.000. \u00bfNecesitas algo m\u00e1s para tu proyecto?"
+        }
+    ],
+    "visita_3p1tmebo9_1767974943849": [
+        {
+            "role": "user",
+            "text": "hola, quien soy, que te pedi recien"
+        },
+        {
+            "role": "model",
+            "text": "Soy el Asistente Virtual de Constructora Lautaro. Por favor, ind\u00edcame tu consulta para poder asistirte."
+        }
+    ]
+}

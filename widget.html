@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo SanTec AI</title>
+    <style>
+        /* Estilos Base */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 { color: #333; }
+        .placeholder { color: #666; font-style: italic; }
+
+        /* --- WIDGET SANTEC --- */
+        
+        /* Botón flotante */
+        .chat-launcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #111;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .chat-launcher:hover { transform: scale(1.1); }
+        .chat-launcher svg { width: 30px; height: 30px; fill: white; }
+
+        /* Ventana del Chat */
+        .chat-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none; /* Oculto por defecto */
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            border: 1px solid #ddd;
+        }
+
+        /* Cabecera */
+        .chat-header {
+            background-color: #111;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 { margin: 0; font-size: 16px; font-weight: 600; }
+        .chat-header span { font-size: 12px; opacity: 0.8; }
+        .close-btn { cursor: pointer; font-size: 20px; }
+
+        /* Mensajes */
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.bot {
+            background-color: #e0e0e0;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            background-color: #111;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Input area */
+        .chat-input-area {
+            padding: 10px;
+            border-top: 1px solid #eee;
+            display: flex;
+            background: white;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: none;
+            border: none;
+            color: #111;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .branding {
+            text-align: center;
+            font-size: 10px;
+            color: #888;
+            padding: 5px;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Constructora de Lautaro</h1>
+    <p class="placeholder">Sitio en construcción...</p>
+
+    <div class="chat-launcher" onclick="toggleChat()">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div>
+                <h3>Asistente Virtual</h3>
+                <span>En línea 🟢</span>
+            </div>
+            <div class="close-btn" onclick="toggleChat()">×</div>
+        </div>
+
+        <div class="chat-messages" id="messagesList">
+            <div class="message bot">
+                Hola 👋 Soy la IA de la Constructora. ¿En qué puedo ayudarte hoy?
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Escribe tu consulta..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+        
+        <div class="branding">
+            Powered by <b>SanTec</b>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DEL CHAT CON MEMORIA ---
+
+        // 1. Obtener o crear ID único del cliente
+        function getClientID() {
+            let id = localStorage.getItem('santec_client_id');
+            if (!id) {
+                id = 'visita_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+                localStorage.setItem('santec_client_id', id);
+            }
+            return id;
+        }
+
+        const currentClientID = getClientID();
+        console.log("ID Cliente:", currentClientID);
+
+        // 2. Abrir/Cerrar ventana
+        function toggleChat() {
+            const chat = document.getElementById('chatWindow');
+            if (chat.style.display === 'none' || chat.style.display === '') {
+                chat.style.display = 'flex';
+                setTimeout(() => document.getElementById('userInput').focus(), 100);
+            } else {
+                chat.style.display = 'none';
+            }
+        }
+
+        // 3. Enviar mensaje
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            const messagesList = document.getElementById('messagesList');
+
+            if (!text) return;
+
+            // Mostrar mensaje usuario
+            addMessage(text, 'user');
+            input.value = '';
+            input.focus();
+
+            // Mostrar "..."
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading-indicator';
+            loadingDiv.classList.add('message', 'bot');
+            loadingDiv.innerText = '...';
+            messagesList.appendChild(loadingDiv);
+            messagesList.scrollTop = messagesList.scrollHeight;
+
+            try {
+                // Petición al servidor Python
+                const response = await fetch('http://127.0.0.1:8000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_message: text,
+                        client_id: currentClientID
+                    })
+                });
+
+                if (!response.ok) throw new Error("Error server");
+
+                const data = await response.json();
+
+                // Mostrar respuesta del bot
+                loadingDiv.remove();
+                addMessage(data.response, 'bot');
+
+            } catch (error) {
+                console.error(error);
+                loadingDiv.remove();
+                addMessage("Error de conexión 🔴", 'bot');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messagesList = document.getElementById('messagesList');
+            const div = document.createElement('div');
+            div.classList.add('message', sender);
+            div.innerText = text;
+            messagesList.appendChild(div);
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+    </script>
+</body>
+</html>
